@@ -22,13 +22,13 @@ export const Footer = () => {
               href="/about" 
               className="text-gray-300 hover:text-green-400 transition-colors mb-2"
             >
-              О нас
+              About
             </Link>
             <Link 
               href="/privacy" 
               className="text-gray-300 hover:text-green-400 transition-colors mb-2"
             >
-              Конфиденциальность
+              Confidence
             </Link>
           </div>
         </div>
@@ -36,7 +36,7 @@ export const Footer = () => {
         {/* Копирайт */}
         <div className="mt-1 border-t border-gray-700 pt-2 text-center">
           <p className="text-gray-400 text-sm">
-            © {new Date().getFullYear()} GlebbassMP. Все права защищены.
+            © {new Date().getFullYear()} GlebbassMP Copyright.
           </p>
         </div>
       </div>
