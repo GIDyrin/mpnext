@@ -28,7 +28,7 @@ export const Footer = () => {
               href="/privacy" 
               className="text-gray-300 hover:text-green-400 transition-colors mb-2"
             >
-              Confidence
+              Terms and responsibility
             </Link>
           </div>
         </div>
