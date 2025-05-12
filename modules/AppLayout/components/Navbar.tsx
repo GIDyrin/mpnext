@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { parseCookies, destroyCookie } from 'nookies';
 import { Logo } from './Logo';
-import { authService } from '@/lib/api';
+import { authService } from '@/lib/services';
 import { useRouter } from 'next/router';
 import { AxiosResponse } from 'axios';
 
