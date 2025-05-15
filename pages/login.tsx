@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { setCookie } from 'nookies';
 import { useRouter } from 'next/router';
 import { AppLayout } from '@/modules';
-import { authService } from '@/lib/api';
+import { authService } from '@/lib/services';
 import { AxiosError } from 'axios';
 
 export default function Login() {

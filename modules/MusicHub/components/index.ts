@@ -1,4 +1,3 @@
-export * from "./AboutLibrary"
-export * from "./UploadSection"
+export * from "./UploadingSection"
 export * from "./LoadingState"
-export * from "./LibraryHeader"
+export * from "./PlaylistManagement"

@@ -1,6 +1,10 @@
+import { Track } from "./track";
+
 export type Playlist = {
-    id: string;
+    id: number;
     name: string;
-    tracks: number;
-    deletable: boolean;
-  };
+    track_count: number; 
+    is_system: boolean;
+    created_at: string;
+    user_id: number;
+};

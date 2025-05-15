@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { AxiosError } from 'axios';
 import { AppLayout } from '@/modules';
-import { authService } from '@/lib/api';
+import { authService } from '@/lib/services';
 
 export default function Register() {
   const [email, setEmail] = useState('');

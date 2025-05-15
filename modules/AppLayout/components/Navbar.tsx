@@ -22,33 +22,55 @@ export const Navbar = () => {
     const checkAuth = async () => {
       const cookies = parseCookies();
       if (cookies.access) {
-        try {
-          const response: AxiosResponse = await authService.getMe();
-          setUserData(response.data);
-        } catch (error) {
-          destroyCookie(null, 'access');
-          destroyCookie(null, 'refresh');
+        const username = localStorage.getItem('glebbassmp_username');
+        const email = localStorage.getItem('glebbassmp_email');
+
+        if (username && email) {
+          // Если данные уже есть в localStorage
+          setUserData({ username, email });
+        } else {
+          // Если данные отсутствуют, получаем их с сервера
+          try {
+            const response: AxiosResponse = await authService.getMe();
+            setUserData(response.data);
+            localStorage.setItem('glebbassmp_username', response.data.username);
+            localStorage.setItem('glebbassmp_email', response.data.email);
+          } catch (error) {
+            console.error('Ошибка получения данных:', error);
+            destroyCookie(null, 'access');
+            destroyCookie(null, 'refresh');
+            router.push('/login');
+          }
+        }
+      } else {
+        const excludedPaths = ['/', '/login', '/register', '/about', '/privacy'];
+        if (!excludedPaths.includes(router.pathname)) {
+          router.push('/login');
         }
       }
+
       setLoading(false);
     };
-    
+
     checkAuth();
-  }, []);
+  }, [router]);
+
 
   const handleLogout = async () => {
     await authService.logout();
+    localStorage.removeItem('glebbassmp_username')
+    localStorage.removeItem('glebbassmp_email')
     router.push('/login');
   };
 
-  if (loading) return null;
-
   return (
-    <nav className="bg-gray-800 p-4">
+    <nav className="bg-gray-800 p-4 mb-3">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <Link href="/" className="flex items-center space-x-3">
           <Logo />
         </Link>
+        
+        {loading ? <div>Loading...</div> : null }
         
         {userData ? (
           <div className="relative">

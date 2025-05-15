@@ -3,7 +3,7 @@ import { Logo } from './Logo';
 
 export const Footer = () => {
   return (
-    <footer className="bg-gray-800 border-t border-gray-700 mt-6 text-sm">
+    <footer className="bg-gray-800 border-t border-gray-700 mt-3 text-sm">
       <div className="max-w-7xl mx-auto px-4 py-4">
         <div className="flex flex-row justify-between items-center">
           {/* Лого и название */}
