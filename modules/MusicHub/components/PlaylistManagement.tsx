@@ -92,7 +92,7 @@ export const PlaylistManagement = ({
           <div 
             key={playlist.id} 
             className="bg-gray-700 p-4 rounded-lg hover:bg-gray-600 transition-colors cursor-pointer px-4 mb-2.5"
-            onClick={() => router.push(`/playlist/${playlist.id}`)}
+            onClick={() => router.push(`usermp/playlist/${playlist.id}`)}
           >
             <div className="flex justify-between items-start">
               <h3 className="text-lg font-medium">{playlist.name}</h3>

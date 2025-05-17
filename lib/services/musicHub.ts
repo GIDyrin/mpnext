@@ -40,7 +40,6 @@ export const musicHubService = {
     }
   },
 
-  // Обновленный метод сервиса
   async uploadTracks(
     tracksData: TrackUploadData[],
     onProgress?: (progress: number) => void
@@ -76,28 +75,4 @@ export const musicHubService = {
     }
   },
 
-  async addTracksToPlaylist(
-    playlistId: number, 
-    trackIds: number[]
-  ): Promise<{ status: string }> {
-    try {
-      const response = await api.post<{ status: string }>(
-        `/playlists/${playlistId}/add-tracks/`,
-        { track_ids: trackIds }
-      );
-      return response.data;
-    } catch (error) {
-      baseErrorHandler(error);
-      throw error;
-    }
-  },
-
-  async deleteTrack(trackId: number): Promise<void> {
-    try {
-      await api.delete(`/tracks/${trackId}/delete/`);
-    } catch (error) {
-      baseErrorHandler(error);
-      throw error;
-    }
-  }
 };

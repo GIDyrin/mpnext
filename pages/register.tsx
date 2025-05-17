@@ -52,7 +52,7 @@ export default function Register() {
 
   return (
     <AppLayout>
-      <div className="w-full max-w-md px-4">
+      <div className="w-full max-w-lg px-4">
         <div className="bg-gray-800 p-6 rounded-lg">
           <h2 className="text-2xl font-bold text-green-400 mb-6">Register</h2>
           {error && <p className="text-red-500 mb-4">{error}</p>}
