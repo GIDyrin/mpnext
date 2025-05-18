@@ -6,6 +6,10 @@ import Link from 'next/link';
 import { AppLayout } from '@/modules';
 import { TrashIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
 import { Modal } from '@/modules/PlaylistConfig/Modal';
+import { TrackItem } from '@/modules/PlaylistConfig';
+import { Player } from '@/modules/Player';
+
+
 
 const PlaylistPage = () => {
   const router = useRouter();
@@ -94,13 +98,6 @@ const PlaylistPage = () => {
   };
 
 
-  // Форматирование длительности
-  const formatDuration = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-  };
-
   if (loading) return <div>Loading...</div>;
   if (!playlist) return <div>Playlist not found</div>;
 
@@ -135,31 +132,13 @@ const PlaylistPage = () => {
 
           {/* Список треков */}
           <div className="space-y-2 w-full">
-          {[...playlist.tracks]
-            .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-            .map((track) => (
-              <div
+            {playlist.tracks.map((track) => (
+              <TrackItem
                 key={track.id}
-                className="group bg-gray-700 px-4 py-3 rounded-lg flex items-center justify-between hover:bg-gray-600 transition-colors"
-              >
-                <div className="flex-1 min-w-0 pr-4 sm:pr-26">
-                  <h3 className="font-medium truncate">{track.title}</h3>
-                  <p className="text-gray-400 text-sm truncate">{track.artist}</p>
-                </div>
-                
-                <div className="relative w-20 flex justify-end">
-                  <span className="text-gray-400 text-sm transition-opacity duration-200 group-hover:opacity-0">
-                    {formatDuration(track.duration)}
-                  </span>
-                  <button
-                    onClick={() => handleDeleteTrack(track.id)}
-                    className="absolute right-0 text-red-400 hover:text-red-300 p-1.5 rounded-md hover:bg-red-900/20 
-                      opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                  >
-                    <TrashIcon className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
+                track={track}
+                showDelete={!playlist.is_system}
+                onDelete={() => handleDeleteTrack(track.id)}
+              />
             ))}
 
             {playlist.tracks.length === 0 && (
@@ -175,32 +154,26 @@ const PlaylistPage = () => {
           <div className="p-6 bg-gray-800 rounded-lg max-w-md mx-auto">
             <h3 className="text-xl font-semibold mb-4">Add Tracks</h3>
             <div className="space-y-3 max-h-96 overflow-y-auto">
-            {[...availableTracks]
-              .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-              .map((track) => (
-                <label
+              {availableTracks.map((track) => (
+                <div
                   key={track.id}
-                  className="flex items-center gap-4 p-3 hover:bg-gray-700 rounded-lg cursor-pointer">
+                  className="flex items-center gap-4 p-3 hover:bg-gray-700 rounded-lg cursor-pointer"
+                  onClick={() => {
+                    setSelectedTracks(prev => 
+                      prev.includes(track.id)
+                        ? prev.filter(id => id !== track.id)
+                        : [...prev, track.id]
+                    );
+                  }}
+                >
                   <input
                     type="checkbox"
                     checked={selectedTracks.includes(track.id)}
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        setSelectedTracks([...selectedTracks, track.id]);
-                      } else {
-                        setSelectedTracks(selectedTracks.filter(id => id !== track.id));
-                      }
-                    }}
+                    readOnly
                     className="w-5 h-5 text-green-500 rounded focus:ring-green-500"
                   />
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-medium truncate">{track.title}</h4>
-                    <p className="text-gray-400 text-sm truncate">{track.artist}</p>
-                  </div>
-                  <span className="text-gray-400 text-sm">
-                    {formatDuration(track.duration)}
-                  </span>
-                </label>
+                  <TrackItem track={track} />
+                </div>
               ))}
               
               {availableTracks.length === 0 && (
@@ -229,6 +202,7 @@ const PlaylistPage = () => {
           </div>
         </Modal>
       </div>
+      <Player />
     </AppLayout>
   );
 };

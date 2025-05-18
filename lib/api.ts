@@ -4,7 +4,7 @@ import Router from 'next/router';
 
 
 export const api = axios.create({
-  baseURL: 'http://192.168.0.241:8000/api/',
+  baseURL: 'http://192.168.0.241/api/',
 });
 
 // Интерцептор для добавления Access Token в заголовки
@@ -44,7 +44,7 @@ api.interceptors.response.use(
         }
 
         const { data } = await axios.post<{ access: string }>(
-          'http://192.168.0.241:8000/api/auth/token/refresh/',
+          'http://192.168.0.241/api/auth/token/refresh/',
           { refresh }
         );
 
