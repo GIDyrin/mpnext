@@ -47,7 +47,7 @@ export const MusicHub = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-3 space-x-1 py-8 space-y-10">
+    <div className="max-w-6xl mx-auto px-1.5 sm:px-3 space-x-1 py-8 space-y-10">
         <UploadingSection
           playlists={playlists}
           updateParent={() => {setIsUploading(!isUploading)}}

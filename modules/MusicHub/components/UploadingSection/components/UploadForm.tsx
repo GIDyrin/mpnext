@@ -77,7 +77,7 @@ const handleUpload = async () => {
   return (
     <div 
       {...getRootProps()}
-      className={`bg-gray-800 rounded-xl border-dotted  p-3 mb-2 border-2 ${
+      className={`bg-gray-800 rounded-xl border-dotted p-1.5 sm-p-3 mb-2 border-2 ${
         dragActive ? 'border-green-500' : 'border-gray-600'
       } transition-all duration-200`}
     >
@@ -88,7 +88,7 @@ const handleUpload = async () => {
         className="hidden"
       />
       
-      <div className="rounded-lg p-4 text-center">
+      <div className="rounded-lg p-1.5 sm:p-4 text-center">
         <div className="mb-2">
           <label 
             htmlFor="music-upload"

@@ -28,12 +28,12 @@ export const UploadingSection = ({
   };
 
   return (
-    <div className="bg-gray-800 rounded-xl p-8 max-w-2xl mx-auto">
+    <div className="bg-gray-800 rounded-xl p-3 sm:p-8 max-w-2xl mx-auto">
       {isNew ? (
         <>
           <h2 className="text-2xl font-bold text-green-400 mb-4">Get Started</h2> 
           <div className="text-center mb-6">
-            <h1 className="text-4xl font-bold text-green-400 mb-6">
+            <h1 className="text-[20px] sm:text-4xl font-bold text-green-400 mb-6">
               Welcome to Your Music Library
             </h1>
             <AboutLibrary />
@@ -47,7 +47,7 @@ export const UploadingSection = ({
       ) : (
         <>
           <LibraryHeader playlists={playlists} />
-          <div className="bg-gray-800 rounded-xl p-6">
+          <div className="bg-gray-800 rounded-xl p-1 sm:p-6">
             <UploadForm 
               isNew={isNew}
               uploadProgress={uploadProgress}

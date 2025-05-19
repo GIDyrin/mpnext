@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { AppLayout } from '@/modules';
 import { TrashIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
 import { Modal } from '@/modules/PlaylistConfig/Modal';
-import { TrackItem } from '@/modules/PlaylistConfig';
+import { TrackItem, TrackItemSelect } from '@/modules/PlaylistConfig';
 import { Player } from '@/modules/Player';
 
 
@@ -157,7 +157,7 @@ const PlaylistPage = () => {
               {availableTracks.map((track) => (
                 <div
                   key={track.id}
-                  className="flex items-center gap-4 p-3 hover:bg-gray-700 rounded-lg cursor-pointer"
+                  className="flex items-center gap-3 p-1 rounded-lg cursor-pointer"
                   onClick={() => {
                     setSelectedTracks(prev => 
                       prev.includes(track.id)
@@ -166,13 +166,7 @@ const PlaylistPage = () => {
                     );
                   }}
                 >
-                  <input
-                    type="checkbox"
-                    checked={selectedTracks.includes(track.id)}
-                    readOnly
-                    className="w-5 h-5 text-green-500 rounded focus:ring-green-500"
-                  />
-                  <TrackItem track={track} />
+                <TrackItemSelect track={track} selectedTracks={selectedTracks}/>
                 </div>
               ))}
               
@@ -202,7 +196,6 @@ const PlaylistPage = () => {
           </div>
         </Modal>
       </div>
-      <Player />
     </AppLayout>
   );
 };

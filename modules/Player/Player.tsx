@@ -14,7 +14,7 @@ export const Player = () => {
   
 
   return (
-    <div className="fixed bottom-80 left-0 right-0 bg-gray-800 border-t border-gray-700 rounded-2xl">
+    <div className="fixed bottom-2/6 left-0 right-0 bg-gray-800 border-t border-gray-700 rounded-2xl">
       <div className="mx-auto px-4 py-2">
         {/* Прогресс-бар */}
         <div 

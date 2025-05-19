@@ -59,7 +59,7 @@ export const Welcome = () => {
               </div>
             </div>
 
-            <div className="bg-gray-800 rounded-xl p-6 shadow-xl">
+            <div className="bg-gray-800 rounded-xl p-1 sm:p-6 shadow-xl">
               <h3 className="text-xl font-semibold text-green-400 mb-3">
                 Tech Stack Highlights
               </h3>

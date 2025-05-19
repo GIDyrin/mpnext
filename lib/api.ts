@@ -2,10 +2,13 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { parseCookies, setCookie, destroyCookie } from 'nookies';
 import Router from 'next/router';
 
+const honorUrl = '192.168.137.200'
+const lenovoUrl = '192.168.0.241'
 
 export const api = axios.create({
-  baseURL: 'http://192.168.0.241/api/',
+  baseURL: `http://${honorUrl}/api/`,
 });
+
 
 // Интерцептор для добавления Access Token в заголовки
 api.interceptors.request.use((config) => {
