@@ -6,7 +6,7 @@ const honorUrl = '192.168.137.200'
 const lenovoUrl = '192.168.0.241'
 
 export const api = axios.create({
-  baseURL: `http://${honorUrl}/api/`,
+  baseURL: `http://${lenovoUrl}/api/`,
 });
 
 
@@ -30,34 +30,29 @@ api.interceptors.response.use(
         originalRequest.url?.includes('/auth/register') || 
         originalRequest.url?.includes('/auth/token')
     ) {
-      // Пропускаем обработку для регистрации и входа
       return Promise.reject(error);
     }
 
-    if (
-      error.response?.status === 401 &&
-      !originalRequest._retry
-    ) {
+    if (error.response?.status === 401 && !originalRequest._retry) {
       try {
         originalRequest._retry = true;
         const { refresh } = parseCookies();
 
-        if (!refresh) {
-          throw new Error('No refresh token');
-        }
+        if (!refresh) throw new Error('No refresh token');
 
-        const { data } = await axios.post<{ access: string }>(
-          'http://192.168.0.241/api/auth/token/refresh/',
+        // Используем экземпляр api для запроса
+        const { data } = await api.post<{ access: string; refresh: string }>(
+          '/auth/token/refresh/',
           { refresh }
         );
 
-        setCookie(null, 'access', data.access, {
-          maxAge: 30 * 60,
-          path: '/',
-        });
+        setCookie(null, 'access', data.access, { maxAge: 30 * 60, path: '/' });
+        setCookie(null, 'refresh', data.refresh, { maxAge: 24 * 60 * 60, path: '/' });
 
-        originalRequest.headers = originalRequest.headers || {};
-        originalRequest.headers.Authorization = `Bearer ${data.access}`;
+        originalRequest.headers = {
+          ...originalRequest.headers,
+          Authorization: `Bearer ${data.access}`,
+        };
         return api(originalRequest);
       } catch (refreshError) {
         destroyCookie(null, 'access', { path: '/' });
@@ -69,6 +64,7 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
 
 export const baseErrorHandler = function(error: unknown){
   if(error instanceof AxiosError)

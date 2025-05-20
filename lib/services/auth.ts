@@ -32,11 +32,11 @@ export const authService = {
       }
     },
   
-    async logout() {
+    async logout(){
       try {
         const { refresh } = parseCookies();
         if (refresh) {
-          await api.post('auth/logout/', { refresh });
+          await api.post('/auth/logout/', { refresh });
         }
       } finally {
         destroyCookie(null, 'access', { path: '/' });

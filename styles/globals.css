@@ -18,3 +18,35 @@
 body {
   @apply bg-gray-900 text-white;
 }
+
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  50% { transform: translateX(-100%); }
+  51% { opacity: 1;}
+  51% { transform: translateX(110%); opacity: 0;} 
+  100% { transform: translateX(0%); }
+}
+
+.marquee {
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  display: inline-block;
+  max-width: 300px;
+}
+
+.marquee-inner {
+  display: inline-block;
+  animation: marquee 8s linear infinite;
+  will-change: transform;
+}
+
+/* Для hover-паузы */
+.marquee:hover .marquee-inner {
+  animation-play-state: paused;
+}
+
+
+.menu-container {
+  touch-action: manipulation;
+}

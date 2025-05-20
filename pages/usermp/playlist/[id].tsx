@@ -1,13 +1,12 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { PlaylistDetailed, Track } from '@/lib/models';
-import { playlistConf } from '@/lib/services';
+import { downloadingService, playlistConf } from '@/lib/services';
 import Link from 'next/link';
 import { AppLayout } from '@/modules';
-import { TrashIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
+import { PlusCircleIcon, MinusCircleIcon, MusicalNoteIcon} from '@heroicons/react/24/outline';
 import { Modal } from '@/modules/PlaylistConfig/Modal';
 import { TrackItem, TrackItemSelect } from '@/modules/PlaylistConfig';
-import { Player } from '@/modules/Player';
 
 
 
@@ -19,71 +18,70 @@ const PlaylistPage = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [availableTracks, setAvailableTracks] = useState<Track[]>([]);
   const [selectedTracks, setSelectedTracks] = useState<number[]>([]);
+  const [forceRefresh, setForceRefresh] = useState<boolean>(false);
 
   // Загрузка данных плейлиста
-    useEffect(() => {
-        const loadData = async () => {
-            try {
-            if (typeof id !== 'string') return;
-            const playlistId = parseInt(id);
-            
-            // Загрузка текущего плейлиста
-            const playlistData = await playlistConf.getPlaylist(playlistId);
-            setPlaylist({
-                ...playlistData,
-                tracks: [...playlistData.tracks]
-                .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-            });
-            
-            // Загрузка треков из системного плейлиста
-            if (!playlistData.is_system) {
-                const systemPlaylist = await playlistConf.getSystemPlaylist();
-                const existingTrackIds = new Set(playlistData.tracks.map(t => t.id));
-                const filteredTracks = systemPlaylist.tracks
-                .filter(t => !existingTrackIds.has(t.id))
-                .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-                
-                setAvailableTracks(filteredTracks);
-            }
-            } catch (error) {
-            console.error('Error loading data:', error);
-            } finally {
-            setLoading(false);
-            }
-        };
+useEffect(() => {
+    const loadData = async () => {
+      try {
+        if (typeof id !== 'string') return;
+        const playlistId = parseInt(id);
+        
+        // Загрузка текущего плейлиста
+        const playlistData = await playlistConf.getPlaylist(playlistId);
+        setPlaylist({
+          ...playlistData,
+          tracks: [...playlistData.tracks].reverse() // Инвертируем порядок
+        });
+        
+        // Загрузка треков из системного плейлиста
+        if (!playlistData.is_system) {
+          const systemPlaylist = await playlistConf.getSystemPlaylist();
+          const existingTrackIds = new Set(playlistData.tracks.map(t => t.id));
+          
+          const filteredTracks = systemPlaylist.tracks
+            .filter(t => !existingTrackIds.has(t.id))
+            .reverse(); // Инвертируем порядок
+          
+          setAvailableTracks(filteredTracks);
+        }
+      } catch (error) {
+        console.error('Error loading data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-        if (id) loadData();
-    }, [id]);
+    if (id) loadData();
+  }, [id]);
 
     // В обработчике добавления треков
-    const handleAddTracks = async () => {
-        if (!playlist || selectedTracks.length === 0) return;
+  const handleAddTracks = async () => {
+    if (!playlist || selectedTracks.length === 0) return;
 
-        try {
-        await playlistConf.addTracksToPlaylist(playlist.id, selectedTracks);
+    try {
+      await playlistConf.addTracksToPlaylist(playlist.id, selectedTracks);
 
-        // Обновляем списки с сортировкой
-        const newTracks = availableTracks
-            .filter(t => selectedTracks.includes(t.id))
-            .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      // Новые треки добавляем в начало списка
+      const newTracks = availableTracks
+        .filter(t => selectedTracks.includes(t.id))
+        .reverse();
 
-        setPlaylist({
-            ...playlist,
-            tracks: [...playlist.tracks, ...newTracks]
-            .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-        });
+      setPlaylist({
+        ...playlist,
+        tracks: [...newTracks, ...playlist.tracks]
+      });
 
-        setAvailableTracks(prev => prev
-            .filter(t => !selectedTracks.includes(t.id))
-            .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-        );
+      setAvailableTracks(prev => prev
+        .filter(t => !selectedTracks.includes(t.id))
+      );
 
-        setIsAddModalOpen(false);
-        setSelectedTracks([]);
-        } catch (error) {
-        console.error('Error adding tracks:', error);
-        }
-    };
+      setIsAddModalOpen(false);
+      setSelectedTracks([]);
+    } catch (error) {
+      console.error('Error adding tracks:', error);
+    }
+  };
 
     const handleDeleteTrack = async (trackId: number) => {
     if (!playlist || !id) return;
@@ -103,7 +101,7 @@ const PlaylistPage = () => {
 
   return (
     <AppLayout>
-      <div className="bg-gray-800 p-6 sm:p-8 rounded-2xl">
+      <div className="bg-gray-800 p-6 sm:p-8 rounded-2xl my-6">
         <div className="max-w-3xl mx-auto">
           {/* Шапка */}
           <div className="mx-auto mb-6">
@@ -132,12 +130,14 @@ const PlaylistPage = () => {
 
           {/* Список треков */}
           <div className="space-y-2 w-full">
-            {playlist.tracks.map((track) => (
+            {playlist.tracks.map((track, index) => (
               <TrackItem
                 key={track.id}
                 track={track}
                 showDelete={!playlist.is_system}
-                onDelete={() => handleDeleteTrack(track.id)}
+                onDelete={() => handleDeleteTrack(track.id)} 
+                queueIndex={index}
+                playlist={playlist}            
               />
             ))}
 
@@ -150,7 +150,7 @@ const PlaylistPage = () => {
         </div>
 
         {/* Модальное окно добавления треков */}
-        <Modal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)}>
+        <Modal isOpen={isAddModalOpen} onClose={() => {setIsAddModalOpen(false); setForceRefresh(!forceRefresh);}}>
           <div className="p-6 bg-gray-800 rounded-lg max-w-md mx-auto">
             <h3 className="text-xl font-semibold mb-4">Add Tracks</h3>
             <div className="space-y-3 max-h-96 overflow-y-auto">
@@ -195,6 +195,14 @@ const PlaylistPage = () => {
             </div>
           </div>
         </Modal>
+        <div className='flex justify-end'>
+          <button 
+          className='flex items-center justify-evenly px-2.5 py-1.5 bg-green-500 rounded my-3 cursor-pointer'
+          onClick={ () => {downloadingService.downloadPlaylist(playlist.id, `${playlist.name}.zip`)}}
+          >
+            Download <MusicalNoteIcon className='w-5 h-5'/>
+          </button>
+        </div>
       </div>
     </AppLayout>
   );
