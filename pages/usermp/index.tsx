@@ -1,3 +1,5 @@
+'use client'
+
 import { AppLayout } from "@/modules";
 import { MusicHub } from '@/modules/MusicHub';
 

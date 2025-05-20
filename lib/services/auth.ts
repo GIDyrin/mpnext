@@ -57,4 +57,17 @@ export const authService = {
     async getMe(): Promise<AxiosResponse<UserData>> {
       return api.get('/auth/me/');
     },
-  };
+
+    async deleteAccount(password: string){
+    try {
+      await api.post('/auth/delete-account/', { password });
+      // Очистка после успешного удаления
+      destroyCookie(null, 'access', { path: '/' });
+      destroyCookie(null, 'refresh', { path: '/' });
+      Router.push('/login');
+    } catch (error) {
+      baseErrorHandler(error);
+    }
+  },
+
+};

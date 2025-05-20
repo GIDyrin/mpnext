@@ -6,6 +6,7 @@ import { Logo } from './Logo';
 import { authService } from '@/lib/services';
 import { useRouter } from 'next/router';
 import { AxiosResponse } from 'axios';
+import { api } from '@/lib/api';
 
 type UserData = {
   username: string;
@@ -17,6 +18,8 @@ export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
+
+  
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -86,17 +89,22 @@ export const Navbar = () => {
 
             {isOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-gray-700 rounded-md shadow-lg py-1">
-                <Link
-                  href="/settings"
-                  className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600"
+                <button
+                onClick={() => {
+                    const password = prompt('Enter your password to confirm deletion:');
+                    if (password) {
+                      authService.deleteAccount(password);
+                    }
+                  }}
+                  className="w-full text-left px-4 py-2 text-sm border-b-2 border-black text-red-600 hover:bg-gray-600"
                 >
-                  Настройки
-                </Link>
+                  Delete account
+                </button>
                 <button
                   onClick={handleLogout}
                   className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-600"
                 >
-                  Выход
+                  Logout
                 </button>
               </div>
             )}
