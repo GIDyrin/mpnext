@@ -4,9 +4,11 @@ import Router from 'next/router';
 
 const honorUrl = '192.168.137.200'
 const lenovoUrl = '192.168.0.241'
+const ubuntuUrl = '192.168.0.166'
+const localhost = 'localhost'
 
 export const api = axios.create({
-  baseURL: `http://${lenovoUrl}/api/`,
+  baseURL: `http://${localhost}/api/`,
 });
 
 

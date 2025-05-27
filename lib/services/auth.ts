@@ -64,6 +64,8 @@ export const authService = {
       // Очистка после успешного удаления
       destroyCookie(null, 'access', { path: '/' });
       destroyCookie(null, 'refresh', { path: '/' });
+      localStorage.setItem('glebbassmp_email', '');
+      localStorage.setItem('glebbassmp_username', '');
       Router.push('/login');
     } catch (error) {
       baseErrorHandler(error);
